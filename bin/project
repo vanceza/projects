@@ -1,0 +1,32 @@
+#!/bin/sh
+cd $(dirname "$0")
+source ./project-archive.sh
+source ./project-lint.sh
+source ./project-fetch.sh
+source ./project-help.sh
+source ./project-remote-for.sh
+source ./project-rm.sh
+cd - >/dev/null
+
+export PROJECTS_HOME=/home/zachary
+export PROJECTS_ARCHIVE_DIR=/home/zachary/.projects_archive
+export PROJECTS_METADATA_DIR=/home/zachary/projects
+
+if [ $# -eq 0 ]
+then
+    project_help
+    exit $?
+fi
+
+case $1 in
+    lint|help|fetch|archive|rm)
+        shift
+        project_${1} "$@"
+        exit $?
+        ;;
+    *)
+        shift
+        project_help
+        exit $?
+        ;;
+esac

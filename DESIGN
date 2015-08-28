@@ -1,0 +1,12 @@
+A project consists of:
+    - A name
+    - A git repository
+    - Optional metadata:
+        - A .tmux, .screen, or other file which starts up development
+        - An associated timesheet
+
+A project can be in these states:
+    - Remote only
+    - Archived / Cached
+    - Active
+Every project should have a remote version.
