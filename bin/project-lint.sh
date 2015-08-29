@@ -1,5 +1,4 @@
 project_lint() {
-    PROJECTS="${PROJECTS_METADATA_DIR}/PROJECTS"
     if [ -n "$1" ]; then PROJECTS="$1"; shift; fi
     STATUS=0
     awk -e '{ print $1 }' "${PROJECTS}" | while read REPO

@@ -2,6 +2,7 @@
 cd $(dirname "$0")
 source ./project-archive.sh
 source ./project-lint.sh
+source ./project-list.sh
 source ./project-fetch.sh
 source ./project-help.sh
 source ./project-remote-for.sh
@@ -11,6 +12,7 @@ cd - >/dev/null
 export PROJECTS_HOME=/home/zachary
 export PROJECTS_ARCHIVE_DIR=/home/zachary/.projects_archive
 export PROJECTS_METADATA_DIR=/home/zachary/projects
+export PROJECTS="${PROJECTS_METADATA_DIR}/PROJECTS"
 
 if [ $# -eq 0 ]
 then
@@ -18,10 +20,12 @@ then
     exit $?
 fi
 
-case $1 in
-    lint|help|fetch|archive|rm)
+case ${1} in
+    archive|fetch|help|lint|list|rm|remote-for)
+        COMMAND=${1}
+        COMMAND="$(echo "$COMMAND" | tr '-' '_')" # Replace - with _ in COMMAND
         shift
-        project_${1} "$@"
+        project_${COMMAND} "$@"
         exit $?
         ;;
     *)
