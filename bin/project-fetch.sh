@@ -1,67 +1,46 @@
+move_all_contents() {
+    for x in "$1"/* "$1"/.[!.]* "$1"/..?*; do
+      if [ -e "$x" ]; then mv -- "$x" "$2"/; fi
+    done
+}
+
 project_fetch() {
-    if [ $# -ne 1 ]; then project_usage fetch; exit 1; fi
+    if [ $# -ne 1 ]; then project_help fetch; exit 1; fi
     PROJECT="$1"
     shift 1
 
+    ARCHIVE_DIR="${PROJECTS_ARCHIVE_DIR}/${PROJECT}"
+    [ -d "${ARCHIVE_DIR}" ] || unset ARCHIVE_DIR
     TARGET_DIR="${PROJECTS_HOME}/${PROJECT}"
-    if [ -L "${TARGET_DIR}" ]
-    then
-        NEW_TARGET_DIR="$(readlink -e "${TARGET_DIR}")" || {
-            echo "${TARGET_DIR} is a dangling symbolic link" >/dev/stderr
-            exit 1
-        }
-        TARGET_DIR="${NEW_TARGET_DIR}"
-    elif [ ! -e "${TARGET_DIR}" ]
-    then
-        # The directory doesn't exist
-        echo "Creating ${TARGET_DIR}" >/dev/stderr
-        mkdir "${TARGET_DIR}" || {
-            echo "Cannot make directory ${TARGET_DIR}, aborting."
-            exit 1
-        }
-    fi
+    REMOTE="$(project_remote_for "${PROJECT}")"
 
-    if [ -d "${TARGET_DIR}" ]
-    then
-        # The directory exists...
-        if [ -n "$(ls -A "${TARGET_DIR}")" ]
-        then
-            # ...and is nonempty
-            cd "${TARGET_DIR}"
-            # Check if it's a git repo
-            [ -d .git ] || {
-                echo "${TARGET_DIR} exists and is not a git repository" >/dev/stderr
-                exit 1
-            }
-            # Check if it has the correct remote
-            git remote -v | grep origin | grep "fetch" | {
-                read line || {
-                    echo "${TARGET_DIR} exists but has no 'origin' remote" >/dev/stderr
-                    exit 1
-                }
-                ACTUAL_REMOTE="$(echo "$line" | sed -e 's/ (fetch)//' -e 's/origin\t//')"
-                EXPECTED_REMOTE="$(project_remote_for "${PROJECT}")"
-                if [ "${ACTUAL_REMOTE}" = "${EXPECTED_REMOTE}" ]
-                then
-                    echo "${TARGET_DIR} is already checked out"
-                    exit 0
-                else 
-                    echo "${TARGET_DIR} exists but its 'origin' remote is pointed at ${ACTUAL_REMOTE}"
-                    exit 1
-                fi
-            }
-        else
-            # ...and is empty
-            # Do an actual fetch
-            cd "${TARGET_DIR}"
-            REMOTE="$(project_remote_for "${PROJECT}")"
-            git clone "${REMOTE}" .
-        fi
-    else
-        # Directory does not exist
-        echo "${TARGET_DIR} is not a directory" >/dev/stderr
+    case $(project_status "${PROJECT}") in
+    invalid)
+        project_status -v "${PROJECT}" | tail -n+2
         exit 1
-    fi
+        ;;
+    esac
+
+    [ -L "${TARGET_DIR}" ] && TARGET_DIR="$(readlink -e "${TARGET_DIR}")" # Dereference symbolic links
+
+    case $(project_status "${PROJECT}") in
+    clean|dirty)
+        echo "${TARGET_DIR} is already checked out"
+        ;;
+    archived)
+        echo "Unarchiving"
+        if [ -d "${TARGET_DIR}" ]
+        then
+            move_all_contents "${ARCHIVE_DIR}" "${TARGET_DIR}"
+            rmdir "${ARCHIVE_DIR}"
+        else
+            mv "${ARCHIVE_DIR}" "${TARGET_DIR}"
+        fi
+        ;;
+    empty)
+        git clone "${REMOTE}" "${TARGET_DIR}"
+        ;;
+    esac
 }
 
 project_fetch_help() {

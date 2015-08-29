@@ -7,6 +7,7 @@ source ./project-fetch.sh
 source ./project-help.sh
 source ./project-remote-for.sh
 source ./project-rm.sh
+source ./project-status.sh
 cd - >/dev/null
 
 export PROJECTS_HOME=/home/zachary
@@ -21,7 +22,7 @@ then
 fi
 
 case ${1} in
-    archive|fetch|help|lint|list|rm|remote-for)
+    archive|fetch|help|lint|list|rm|remote-for|status)
         COMMAND=${1}
         COMMAND="$(echo "$COMMAND" | tr '-' '_')" # Replace - with _ in COMMAND
         shift

@@ -7,7 +7,7 @@ project_help() {
         project_general_help >/dev/stderr
         exit 1
         ;;
-    archive|fetch|help|lint|list|rm|remote-for)
+    archive|fetch|help|lint|list|rm|remote-for|status)
         project_${SUBJECT}_help >/dev/stderr
         ;;
     *)
@@ -21,13 +21,15 @@ project_general_help() {
 Usage: project <command> args...
   Available commands:
     help [COMMAND]    (current output)
-    list              List projects
-    lint              Verify the PROJECTS file is in the correct format
-    fetch             Get a local copy of the project
-    start             Start development mode for the project
+    archive           Archive a project
     check             Check if there are unsaved local changes
-    rm                Delete the project
     create            Make a new project (interactive)
+    fetch             Get a local copy of the project
+    list              List projects
+    start             Start development mode for the project
+
+    lint              Verify the PROJECTS file is in the correct format
+    rm                Delete the project
 
   (Internal)
     remote-for        Git remote for the project

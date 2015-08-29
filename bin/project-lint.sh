@@ -21,6 +21,7 @@ project_lint() {
         STATUS=1
     done
 
+    echo "valid" >/dev/stderr
     exit $SUCCESS
 }
 
