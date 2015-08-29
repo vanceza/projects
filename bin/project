@@ -1,13 +1,9 @@
 #!/bin/sh
 cd $(dirname "$0")
-source ./project-archive.sh
-source ./project-lint.sh
-source ./project-list.sh
-source ./project-fetch.sh
-source ./project-help.sh
-source ./project-remote-for.sh
-source ./project-rm.sh
-source ./project-status.sh
+for file in project-*.sh
+do
+    source "./${file}"
+done
 cd - >/dev/null
 
 export PROJECTS_HOME=/home/zachary
