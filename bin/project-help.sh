@@ -22,11 +22,11 @@ Usage: project <command> args...
   Available commands:
     help [COMMAND]    (current output)
     archive           Archive a project
-    check             Check if there are unsaved local changes
     create            Make a new project (interactive)
     fetch             Get a local copy of the project
     list              List projects
     start             Start development mode for the project
+    status            Check if there are unsaved local changes
 
     lint              Verify the PROJECTS file is in the correct format
     rm                Delete the project
