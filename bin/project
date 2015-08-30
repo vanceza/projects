@@ -1,28 +1,33 @@
 #!/bin/sh
+
+# Imports
 cd $(dirname "$0")
-for file in project-*.sh
+source "./utils.sh"
+for file in project-*.sh # Import subcommands
 do
     source "./${file}"
 done
 cd - >/dev/null
 
+# XDG standard says where data, config, and cache files go.
+[ -n "${XDG_CACHE_HOME}" ] || XDG_CACHE_HOME="${HOME}/.cache" # Cache files
+[ -n "${XDG_CONFIG_HOME}" ] || XDG_CONFIG_HOME="${HOME}/.config" # Config files
+[ -n "${XDG_DATA_HOME}" ] || XDG_DATA_HOME="${HOME}/.local/share" # Data files
+
 export PROJECTS_HOME="${HOME}"
-[ -z "${XDG_DATA_HOME}" ] || XDG_CACHE_HOME="$HOME/.local/share"
 export PROJECTS_ARCHIVE_DIR="${XDG_DATA_HOME}/projects"
-[ -z "${XDG_CONFIG_HOME}" ] || XDG_CONFIG_HOME="$HOME/.config"
 export PROJECTS_METADATA_DIR="${XDG_CONFIG_HOME}/projects"
 export PROJECTS="${PROJECTS_METADATA_DIR}/PROJECTS"
 
 if [ $# -eq 0 ]
 then
     project_help
-    exit $?
+    exit 1
 fi
 
-COMMAND="$1"
-COMMAND="$(echo "$COMMAND" | tr '-' '_')" # Replace - with _ in COMMAND
+COMMAND="$(echo "$1" | tr '-' '_')" # Replace - with _ in COMMAND
 shift
-if type "project_${COMMAND}" 2>/dev/null | grep -i function >/dev/null
+if is_function "project_${COMMAND}"
 then
     "project_${COMMAND}" "$@"
     exit $?

@@ -3,7 +3,7 @@ project_help() {
     if [ -n "$1" ]; then SUBJECT="$1"; fi
     SUBJECT="$(echo "$SUBJECT" | tr '-' '_')" # Replace - with _ in SUBJECT
 
-    if type "project_${SUBJECT}_help" 2>/dev/null | grep -i function >/dev/null
+    if is_function "project_${SUBJECT}_help"
     then
         "project_${SUBJECT}_help" >/dev/stderr
     else

@@ -1,9 +1,3 @@
-move_all_contents() {
-    for x in "$1"/* "$1"/.[!.]* "$1"/..?*; do
-      if [ -e "$x" ]; then mv -- "$x" "$2"/; fi
-    done
-}
-
 project_fetch() {
     if [ $# -ne 1 ]; then project_help fetch; exit 1; fi
     PROJECT="$1"

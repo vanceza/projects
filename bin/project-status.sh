@@ -1,15 +1,3 @@
-echo_verbose() {
-    if [ -n "${VERBOSE}" ]
-    then
-        echo "$@"
-    fi
-}
-
-is_empty() {
-    read TEST_LINE || return 0
-    return 1
-}
-
 project_status() {
     unset VERBOSE
     unset PROJECT
