@@ -34,7 +34,7 @@ project_status() {
     [ -e "${ARCHIVE_DIR}" ] && [ \! -d "${ARCHIVE_DIR}" ] && {
         echo "invalid"
         echo_verbose "${ARCHIVE_DIR} is not a directory"
-        exit 0
+        return 0
     }
     [ -e "${ARCHIVE_DIR}" ] || unset ARCHIVE_DIR
 
@@ -48,7 +48,7 @@ project_status() {
             echo "empty"
             echo_verbose "${TARGET_DIR} does not exist"
         fi
-        exit 0
+        return 0
     fi
 
     # Dereference any symbolic links
@@ -58,7 +58,7 @@ project_status() {
         NEW_TARGET_DIR="$(readlink -e "${TARGET_DIR}")" || {
             echo "invalid"
             echo_verbose "${TARGET_DIR} is a dangling symbolic link"
-            exit 0
+            return 0
         }
         echo_verbose "Dereferencing ${TARGET_DIR} to ${NEW_TARGET_DIR}"
         TARGET_DIR="${NEW_TARGET_DIR}"
@@ -69,7 +69,7 @@ project_status() {
     then
         echo "invalid"
         echo_verbose "${TARGET_DIR} is not a directory"
-        exit 0
+        return 0
     fi
 
     # The directory exists and is empty
@@ -82,7 +82,7 @@ project_status() {
             echo "empty"
             echo_verbose "${TARGET_DIR} exists and is empty"
         fi
-        exit 0
+        return 0
     fi
 
     cd "${TARGET_DIR}"
@@ -91,14 +91,14 @@ project_status() {
     then
         echo "invalid"
         echo_verbose "${TARGET_DIR} exists and is not a git repository"
-        exit 0
+        return 0
     elif git remote -v >/dev/null 2>&1
     then
         :
     else
         echo "invalid"
         echo_verbose "${TARGET_DIR} is not a valid git repository"
-        exit 0
+        return 0
     fi
 
     # Check if it has the correct remote
@@ -107,14 +107,14 @@ project_status() {
         read line || {
             echo "invalid"
             echo_verbose "${TARGET_DIR} exists but has no 'origin' remote"
-            exit 0
+            return 0
         }
         FS_REMOTE="$(echo "$line" | sed -e 's/ (fetch)//' -e 's/origin\t//')"
         if [ "${FS_REMOTE}" != "${EXPECTED_REMOTE}" ]
         then
             echo "invalid"
             echo_verbose "${TARGET_DIR} exists but its 'origin' remote is pointed at ${FS_REMOTE}"
-            exit 0
+            return 0
         fi
     }
     
@@ -124,7 +124,7 @@ project_status() {
     then
         echo "invalid"
         echo_verbose "${PROJECT} has both a checked out and an archived version"
-        exit 0
+        return 0
     fi
 
     # Check for uncommitted changes
@@ -132,18 +132,18 @@ project_status() {
     then
         echo "dirty"
         echo_verbose "${PROJECT} has uncommitted changes"
-        exit 0
+        return 0
     fi
 
     # Check for unpushed changes (TODO: Only checks current branch)
     if git log origin/master..HEAD | is_empty
     then
         echo "clean"
-        exit 0
+        return 0
     else
         echo "dirty"
         echo_verbose "${PROJECT} has all changes committed, but some are not pushed upstream"
-        exit 0
+        return 0
     fi
 }
 

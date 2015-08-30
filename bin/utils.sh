@@ -8,6 +8,10 @@ is_function() {
     type "$1" 2>/dev/null | grep -i function >/dev/null
 }
 
+is_command() {
+    which "$1" >/dev/null 2>/dev/null
+}
+
 echo_verbose() {
     if [ -n "${VERBOSE}" ]
     then

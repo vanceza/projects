@@ -1,6 +1,14 @@
 project_lint() {
     if [ -n "$1" ]; then PROJECTS="$1"; shift; fi
     STATUS=0
+    if sort -C "${PROJECTS}"
+    then
+        :
+    else
+        echo "${PROJECTS} is not sorted"
+        STATUS=1
+    fi
+
     awk -e '{ print $1 }' "${PROJECTS}" | while read REPO
     do
         case $REPO in
@@ -21,8 +29,11 @@ project_lint() {
         STATUS=1
     done
 
-    echo "valid" >/dev/stderr
-    exit $SUCCESS
+    if [ ${STATUS} -eq 0 ]
+    then
+        echo "valid"
+    fi
+    return ${STATUS}
 }
 
 project_lint_help() {
