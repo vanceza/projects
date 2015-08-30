@@ -13,6 +13,9 @@ project_archive() {
         echo "Archive directory does not exist: ${PROJECTS_ARCHIVE_DIR}"
     fi
 
+    local SOURCE_DIR="${PROJECTS_HOME}/${PROJECT}"
+    local ARCHIVE_DIR="${PROJECTS_ARCHIVE_DIR}/${PROJECT}"
+
     case $(project_status "${PROJECT}") in
     invalid)
         project_status -v "${PROJECT}" | tail -n+2
@@ -24,8 +27,6 @@ project_archive() {
         exit 2
         ;;
     clean)
-        SOURCE_DIR="${PROJECTS_HOME}/${PROJECT}"
-        ARCHIVE_DIR="${PROJECTS_ARCHIVE_DIR}/${PROJECT}"
         mv "${SOURCE_DIR}" "${ARCHIVE_DIR}"
         exit 0
         ;;
