@@ -39,7 +39,6 @@ project_archive() {
         exit 1
         ;;
     esac
-
 }
 
 project_archive_help() {
