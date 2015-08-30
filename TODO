@@ -1,0 +1,4 @@
+Add 'start' command including barebones tmux config file
+Add 'create' command
+Add 'ping' type command to make sure we have access to remote repository
+Get a list of remote repos on deadtree and github and make sure PROJECTS is up to date?
