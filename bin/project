@@ -8,7 +8,7 @@ cd - >/dev/null
 
 export PROJECTS_HOME="${HOME}"
 [ -z "${XDG_DATA_HOME}" ] || XDG_CACHE_HOME="$HOME/.local/share"
-export PROJECTS_ARCHIVE_DIR="${XDG_DATA_HOME}/.projects"
+export PROJECTS_ARCHIVE_DIR="${XDG_DATA_HOME}/projects"
 [ -z "${XDG_CONFIG_HOME}" ] || XDG_CONFIG_HOME="$HOME/.config"
 export PROJECTS_METADATA_DIR="${XDG_CONFIG_HOME}/projects"
 export PROJECTS="${PROJECTS_METADATA_DIR}/PROJECTS"
