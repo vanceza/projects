@@ -2,17 +2,13 @@ project_help() {
     SUBJECT=general
     if [ -n "$1" ]; then SUBJECT="$1"; fi
     SUBJECT="$(echo "$SUBJECT" | tr '-' '_')" # Replace - with _ in SUBJECT
-    case $SUBJECT in
-    general)
-        project_general_help >/dev/stderr
-        exit 1
-        ;;
-    archive|fetch|help|lint|list|rm|remote-for|status)
-        project_${SUBJECT}_help >/dev/stderr
-        ;;
-    *)
+
+    if type "project_${SUBJECT}_help" 2>/dev/null | grep -i function >/dev/null
+    then
+        "project_${SUBJECT}_help" >/dev/stderr
+    else
         echo "No help available on subject: ${SUBJECT}" >/dev/stderr
-    esac
+    fi
     exit 0
 }
 

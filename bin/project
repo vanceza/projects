@@ -19,17 +19,15 @@ then
     exit $?
 fi
 
-case ${1} in
-    archive|fetch|help|lint|list|rm|remote-for|status)
-        COMMAND=${1}
-        COMMAND="$(echo "$COMMAND" | tr '-' '_')" # Replace - with _ in COMMAND
-        shift
-        project_${COMMAND} "$@"
-        exit $?
-        ;;
-    *)
-        shift
-        project_help
-        exit $?
-        ;;
-esac
+COMMAND="$1"
+COMMAND="$(echo "$COMMAND" | tr '-' '_')" # Replace - with _ in COMMAND
+shift
+if type "project_${COMMAND}" 2>/dev/null | grep -i function >/dev/null
+then
+    "project_${COMMAND}" "$@"
+    exit $?
+else
+    echo "Not a valid subcommand: ${COMMAND}" >/dev/stderr
+    project_help
+    exit 1
+fi
