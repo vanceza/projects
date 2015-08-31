@@ -24,6 +24,13 @@ is_empty() {
     return 1
 }
 
+inplace_sort() {
+    FILE="$1"
+    TMPFILE="$(mktemp)"
+    sort "${FILE}" >"${TMPFILE}"
+    mv "${TMPFILE}" "${FILE}"
+}
+
 find_project() {
     while read LINE
     do
