@@ -1,0 +1,4 @@
+#!/usr/bin/env mux
+new-session -s "${PROJECT}" -c "${PROJECT_DIR}" "bash"
+new-window -n "time" -c "${PROJECT_METADATA_DIR}" "vim timesheet"
+#new-window -n "vim" -c "${PROJECT_DIR}" "vim -p *"

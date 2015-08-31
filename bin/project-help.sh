@@ -24,11 +24,13 @@ Usage: project <command> args...
     start             Start development mode for the project
     status            Check if there are unsaved local changes
 
+    doctor            Make sure there are no missing projects, bad state, etc
     lint              Verify the PROJECTS file is in the correct format
     rm                Delete the project
 
   (Internal)
-    remote-for        Git remote for the project
+    metadata-dir      Print the metadata directory for the project
+    remote-for        Print the git remote for the project
 EOF
 }
 
