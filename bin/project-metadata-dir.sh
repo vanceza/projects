@@ -13,14 +13,7 @@ project_metadata_dir() {
     }
 
     SKEL_METADATA_DIR="${PROJECTS_METADATA_DIR}/skel"
-    if [ \! -e "${SKEL_METADATA_DIR}" ]
-    then
-        SKEL_SOURCE_DIR="$(dirname "$0")/../skel"
-        if [ -e "${SKEL_SOURCE_DIR}" ]
-        then
-            cp -r "${SKEL_SOURCE_DIR}" "${SKEL_METADATA_DIR}"
-        fi
-    fi
+    [ -e "${SKEL_METADATA_DIR}" ] || SKEL_METADATA_DIR="$(dirname "$0")/../skel"
 
     PROJECT_METADATA_DIR="${PROJECTS_METADATA_DIR}/${PROJECT}"
     if [ \! -d "${PROJECT_METADATA_DIR}" ]
