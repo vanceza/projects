@@ -1,5 +1,1 @@
 Add 'create' command
-Add 'doctor' command
-    Check validity of every project
-    Ping every project
-    Get a list of remote repos on deadtree and github and make sure PROJECTS is up to date?
