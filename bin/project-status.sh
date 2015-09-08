@@ -44,11 +44,12 @@ project_status() {
         if [ -n "$ARCHIVE_DIR" ]
         then
             echo "archived"
+            return 0
         else
             echo "empty"
             echo_verbose "${TARGET_DIR} does not exist"
+            return 0
         fi
-        return 0
     fi
 
     # Dereference any symbolic links
@@ -78,11 +79,12 @@ project_status() {
         if [ -n "${ARCHIVE_DIR}" ]
         then
             echo "archived"
+            return 0
         else
             echo "empty"
             echo_verbose "${TARGET_DIR} exists and is empty"
+            return 0
         fi
-        return 0
     fi
 
     cd "${TARGET_DIR}"
@@ -103,20 +105,19 @@ project_status() {
 
     # Check if it has the correct remote
     EXPECTED_REMOTE="$(project_remote_for "${PROJECT}")"
-    git remote -v | grep origin | grep "fetch" | {
-        read line || {
-            echo "invalid"
-            echo_verbose "${TARGET_DIR} exists but has no 'origin' remote"
-            return 0
-        }
-        FS_REMOTE="$(echo "$line" | sed -e 's/ (fetch)//' -e 's/origin\t//')"
-        if [ "${FS_REMOTE}" != "${EXPECTED_REMOTE}" ]
-        then
-            echo "invalid"
-            echo_verbose "${TARGET_DIR} exists but its 'origin' remote is pointed at ${FS_REMOTE}"
-            return 0
-        fi
+    line="$(git remote -v | grep origin | grep "fetch" | head -n1)"
+    [ -n "${line}" ] || {
+        echo "invalid"
+        echo_verbose "${TARGET_DIR} exists but has no 'origin' remote"
+        return 0
     }
+    FS_REMOTE="$(echo "$line" | sed -e 's/ (fetch)//' -e 's/origin\t//')"
+    if [ "${FS_REMOTE}" != "${EXPECTED_REMOTE}" ]
+    then
+        echo "invalid"
+        echo_verbose "${TARGET_DIR} exists but its 'origin' remote is pointed at ${FS_REMOTE}"
+        return 0
+    fi
     
     # The git repo DOES exist with the correct remote at this point.
     # Check for an additional archived version
