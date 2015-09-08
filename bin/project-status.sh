@@ -1,6 +1,5 @@
 project_status() {
-    unset VERBOSE
-    unset PROJECT
+    unset VERBOSE PROJECT
     NARGS=0
     while [ $# -gt 0 ]
     do
@@ -21,7 +20,11 @@ project_status() {
         esac
         shift
     done
-    if [ $NARGS -ne 1 ]
+    if [ $NARGS -eq 0 ]
+    then
+        PROJECT="$(basename "$(pwd)")"
+    fi
+    if [ $NARGS -gt 1 ]
     then
         project_help "status"
         exit 1
@@ -114,9 +117,17 @@ project_status() {
     FS_REMOTE="$(echo "$line" | sed -e 's/ (fetch)//' -e 's/origin\t//')"
     if [ "${FS_REMOTE}" != "${EXPECTED_REMOTE}" ]
     then
-        echo "invalid"
-        echo_verbose "${TARGET_DIR} exists but its 'origin' remote is pointed at ${FS_REMOTE}"
-        return 0
+        if [ -z "${EXPECTED_REMOTE}" ]
+        then
+            echo "invalid"
+            echo_verbose "${TARGET_DIR} is a git repository but not a listed project"
+            echo_verbose "Its 'origin' remote is pointed at ${FS_REMOTE}"
+            return 0
+        else
+            echo "invalid"
+            echo_verbose "${TARGET_DIR} exists but its 'origin' remote is pointed at ${FS_REMOTE}"
+            return 0
+        fi
     fi
     
     # The git repo DOES exist with the correct remote at this point.
@@ -150,7 +161,7 @@ project_status() {
 
 project_status_help() {
     cat <<EOF
-Usage: project status [-v] PROJECT
+Usage: project status [-v] [PROJECT]
   Returns a short status string with the state of the project
 
   One of:
