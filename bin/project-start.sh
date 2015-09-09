@@ -25,7 +25,11 @@ project_start() {
         esac
         shift
     done
-    if [ "${NARGS}" -ne 1 ]
+    if [ "${NARGS}" -eq 0 ]
+    then
+        PROJECT="$(basename "$(pwd)")"
+    fi
+    if [ "${NARGS}" -gt 1 ]
     then
         project_help start
         exit 1

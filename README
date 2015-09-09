@@ -1,0 +1,19 @@
+A tool for managing
+
+Usage: project <command> args...
+  Available commands:
+    help [COMMAND]    (current output)
+    archive           Archive a project
+    create            Make a new project (interactive)
+    fetch             Get a local copy of the project
+    list              List projects
+    start             Start development mode for the project
+    status            Check if there are unsaved local changes
+
+    doctor            Make sure there are no missing projects, bad state, etc
+    lint              Verify the PROJECTS file is in the correct format
+    rm                Delete the project
+
+  (Internal)
+    metadata-dir      Print the metadata directory for the project
+    remote-for        Print the git remote for the project

@@ -13,7 +13,7 @@ project_metadata_dir() {
     }
 
     SKEL_METADATA_DIR="${PROJECTS_METADATA_DIR}/skel"
-    [ -e "${SKEL_METADATA_DIR}" ] || SKEL_METADATA_DIR="$(dirname "$0")/../skel"
+    [ -e "${SKEL_METADATA_DIR}" ] || SKEL_METADATA_DIR="$(dirname "$0")/../etc/project/skel"
 
     PROJECT_METADATA_DIR="${PROJECTS_METADATA_DIR}/${PROJECT}"
     if [ \! -d "${PROJECT_METADATA_DIR}" ]

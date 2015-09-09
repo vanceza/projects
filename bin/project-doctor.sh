@@ -44,7 +44,7 @@ project_doctor() {
         # Find missing deadtree projects
         echo "Looking for missing deadtree projects" >/dev/stderr
         DEADTREE_LIST=$(mktemp)
-        deadtree_projects | comm -2 -3 - "${PROJECT_LIST}" >"${DEADTREE_LIST}"
+        deadtree_projects | sort | comm -2 -3 - "${PROJECT_LIST}" >"${DEADTREE_LIST}"
         while read MISSING
         do
             echo "${MISSING} is on deadtree but not on the local system" >/dev/stderr
@@ -55,7 +55,7 @@ project_doctor() {
         # Find missing github projects
         echo "Looking for missing github projects" >/dev/stderr
         GITHUB_LIST=$(mktemp)
-        github_projects | comm -2 -3 - "${PROJECT_LIST}" >"${GITHUB_LIST}"
+        github_projects | sort | comm -2 -3 - "${PROJECT_LIST}" >"${GITHUB_LIST}"
         while read MISSING
         do
             echo "${MISSING} is on github but not on the local system" >/dev/stderr

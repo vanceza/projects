@@ -2,8 +2,7 @@
 
 # Imports
 cd $(dirname "$0")
-source "./utils.sh"
-for file in project-*.sh # Import subcommands
+for file in ../lib/project-core/*.sh # Import subcommands
 do
     source "./${file}"
 done
