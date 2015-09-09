@@ -1,4 +1,4 @@
-A tool for managing
+A tool for managing git projects.
 
 Usage: project <command> args...
   Available commands:
