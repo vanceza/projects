@@ -1,5 +1,5 @@
 valid_project_name() {
-    VALID_PROJECT_CHARACTERS="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_"
+    VALID_PROJECT_CHARACTERS="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-"
     ORIG_NAME="$1"
     FILTERED_NAME="$(echo "$1" | tr -cd "${VALID_PROJECT_CHARACTERS}")"
     [ "${ORIG_NAME}" = "${FILTERED_NAME}" ]
