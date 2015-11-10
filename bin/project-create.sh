@@ -162,7 +162,7 @@ project_create() {
         ssh deadtree git init --bare "/git/${PROJECT}.git"
         ;;
     github)
-        USER=vanceza
+        USER=za3k
         gh repo --new "${PROJECT}" --description "${DESCRIPTION}"
         ;;
     esac
