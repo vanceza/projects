@@ -24,15 +24,23 @@ then
     exit 1
 fi
 
+# Rewrite the command
+ORIGINAL_SUBCOMMAND=$SUBCOMMAND
 SUBCOMMAND="$(echo "$1" | tr '-' '_')" # Replace - with _ in the name of the SUBCOMMAND
+case "${SUBCOMMAND}" in # Command aliases
+    get)
+      SUBCOMMAND=fetch
+      ;;
+esac    
 shift
+
 if is_function "project_${SUBCOMMAND}"
 then
     # Run subcommand with remaining arguments
     "project_${SUBCOMMAND}" "$@"
     exit $?
 else
-    echo "Not a valid subcommand: ${SUBCOMMAND}" >/dev/stderr
+    echo "Not a valid subcommand: ${ORIGINAL_SUBCOMMAND}" >/dev/stderr
     project_help
     exit 1
 fi
