@@ -1,0 +1,54 @@
+#!/bin/bash
+
+usage() {
+    echo "Usage: git-repo-remotes repo"
+}
+
+summarize-source() {
+    if echo "$1" | grep -q 'git@github.com:vanceza/'; then
+        echo "GITHUB(vanceza)"
+    elif echo "$1" | grep -q 'https://github.com'; then
+        echo "GITHUB(public)"
+    elif echo "$1" | grep -q 'git@github.com'; then
+        echo "GITHUB(unknown)[$1]"
+    elif echo "$1" | grep -q 'git://github.com'; then
+        echo "GITHUB(public)"
+    elif echo "$1" | grep -q 'git@bitbucket.org:freethenation'; then
+        echo "BITBUCKET(freethenation)"
+    elif echo "$1" | grep -q 'git@bitbucket.org:vanceza'; then
+        echo "BITBUCKET(vanceza)"
+    elif echo "$1" | grep -q 'deadtree:/git/'; then
+        echo "DEADTREE"
+    elif echo "$1" | grep -q 'burn:/data/git/'; then
+        echo "BURN"
+    elif echo "$1" | grep -q '^/'; then
+        echo "LOCAL"
+    else
+        echo "UNKNOWN[$1]"
+    fi
+}
+
+summarize-sources() {
+    REPO="$1"
+    pushd "${REPO}" >/dev/null
+    if [ 0 -eq $(git remote -v | wc -l) ]
+    then
+        echo "NONE"
+    else
+        git remote -v | awk -e '{print $2}' | while read RAW_SOURCE
+        do
+            summarize-source "${RAW_SOURCE}"
+        done | sort | uniq | tr "\n" ' ' | sed -e 's/ $//'
+        echo
+    fi
+    popd >/dev/null
+}
+
+if [ $# -ne 1 ]
+then
+    usage; exit 1
+fi
+
+REPO="$1"
+
+summarize-sources "$REPO"

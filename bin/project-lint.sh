@@ -14,11 +14,11 @@ project_lint() {
         case $REPO in
         github)
             ;;
-        deadtree)
+        burn)
             ;;
         *)
             echo "Repo was: ${REPO}"
-            echo "Repo must be one of: deadtree github"
+            echo "Repo must be one of: burn github"
             STATUS=1
         esac
     done

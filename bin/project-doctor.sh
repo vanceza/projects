@@ -7,9 +7,9 @@ github_projects() {
     fi
 }
 
-deadtree_projects() {
-    ssh deadtree bash 2>/dev/null <<BASH
-        cd /git
+burn_projects() {
+    ssh burn     bash 2>/dev/null <<BASH
+        cd /data/git
         ls | sed -e 's/.git//' | sort
 BASH
 }
@@ -41,13 +41,13 @@ project_doctor() {
         echo "Pinging all remotes" >/dev/stderr
         xargs -n 1 -P 0 -I{} -- "$0" ping {} <${PROJECT_LIST} || unset OK
 
-        # Find missing deadtree projects
-        echo "Looking for missing deadtree projects" >/dev/stderr
-        DEADTREE_LIST=$(mktemp)
-        deadtree_projects | sort | comm -2 -3 - "${PROJECT_LIST}" >"${DEADTREE_LIST}"
+        # Find missing burn projects
+        echo "Looking for missing burn projects" >/dev/stderr
+        BURN_LIST=$(mktemp)
+        burn_projects | sort | comm -2 -3 - "${PROJECT_LIST}" >"${BURN_LIST}"
         while read MISSING
         do
-            echo "${MISSING} is on deadtree but not on the local system" >/dev/stderr
+            echo "${MISSING} is on burn but not on the local system" >/dev/stderr
             unset OK
         done <"${DEADTREE_LIST}"
         rm "${DEADTREE_LIST}"

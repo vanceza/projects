@@ -65,11 +65,11 @@ project_create() {
     # Get the remote and make sure it is valid
     if [ -z "${REMOTE}" ]
     then
-        REMOTE=deadtree
+        REMOTE=burn
         if [ -t 0 ]
         then
             # Prompt
-            echo -n "Remote [deadtree github] (${REMOTE}): "
+            echo -n "Remote [burn github] (${REMOTE}): "
             read PROMPT_REMOTE
             [ -z "${PROMPT_REMOTE}" ] || REMOTE="${PROMPT_REMOTE}"
         fi
@@ -83,7 +83,7 @@ project_create() {
             return 1
         }
         ;;
-    deadtree)
+    burn)
         ;;
     *)
         echo "Remote is not valid: ${REMOTE}" >/dev/stderr
@@ -157,9 +157,9 @@ project_create() {
 
     # Create the empty remote repo
     case "${REMOTE}" in
-    deadtree)
+    burn)
         USER=zachary
-        ssh deadtree git init --bare "/git/${PROJECT}.git"
+        ssh burn git init --bare "/data/git/${PROJECT}.git"
         ;;
     github)
         USER=za3k
@@ -191,7 +191,7 @@ Usage: project create [OPTIONS...] [REMOTE [PROJECT]]
 
 Options
   -n PROJECT        Project name
-  -r REMOTE         Remote name, one of: deadtree github
+  -r REMOTE         Remote name, one of: burn github
   -d DESCRIPTION    Project description (github only)
 EOF
 }

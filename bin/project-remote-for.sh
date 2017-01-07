@@ -11,12 +11,12 @@ project_remote_for() {
         github)
             echo "git@github.com:${USER}/${PROJECT}.git"
             ;;
-        deadtree)
+        burn)
             if [ "${USER}" = "$(whoami)" ]
             then
-                echo "deadtree:/git/${PROJECT}.git"
+                echo "burn:/data/git/${PROJECT}.git"
             else
-                echo "${USER}@deadtree:/git/${PROJECT}.git"
+                echo "${USER}@burn:/data/git/${PROJECT}.git"
             fi
             ;;
         *)
