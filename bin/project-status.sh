@@ -125,7 +125,7 @@ project_status() {
             return 0
         else
             echo "invalid"
-            echo_verbose "${TARGET_DIR} exists but its 'origin' remote is pointed at ${FS_REMOTE}"
+            echo_verbose "${TARGET_DIR} exists but its 'origin' remote is pointed at ${FS_REMOTE} (${EXPECTED_REMOTE} expected)"
             return 0
         fi
     fi

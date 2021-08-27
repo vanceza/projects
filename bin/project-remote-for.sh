@@ -19,6 +19,14 @@ project_remote_for() {
                 echo "${USER}@burn:/data/git/${PROJECT}.git"
             fi
             ;;
+        germinate)
+            if [ "${USER}" = "$(whoami)" ]
+            then
+                echo "germinate:/data/git/${PROJECT}.git"
+            else
+                echo "${USER}@germinate:/data/git/${PROJECT}.git"
+            fi
+            ;;
         *)
             echo "Invalid remote: ${REMOTE}" >/dev/stderr
             exit 1
