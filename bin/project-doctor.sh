@@ -26,13 +26,19 @@ project_doctor() {
         echo "Checking validity of all projects" >/dev/stderr
         while read PROJECT
         do
+            echo -n "${PROJECT} " >&2
             case $(project_status "${PROJECT}") in
             invalid)
                 project_status -v "${PROJECT}" | tail -n+2
                 unset OK
+                echo "${PROJECT} invalid" >&2
                 ;;
             dirty)
                 #echo "${PROJECT} is dirty"
+                echo "${PROJECT} dirty" >&2
+                ;;
+            *)
+                echo "${PROJECT} ok" >&2
                 ;;
             esac
         done <"${PROJECT_LIST}"
