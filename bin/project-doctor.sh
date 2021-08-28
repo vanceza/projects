@@ -16,6 +16,18 @@ BASH
 
 project_doctor() {
     OK=yes
+    unset FAST
+    while [ $# -ge 1 ]; do
+        case "$1" in
+            -f|--fast)
+              FAST=yes
+              ;;
+            *)
+              ;;
+        esac
+        shift
+    done
+    STATUS=0
     echo "Linting ${PROJECTS}" >/dev/stderr
     if project_lint >/dev/null
     then
@@ -26,26 +38,28 @@ project_doctor() {
         echo "Checking validity of all projects" >/dev/stderr
         while read PROJECT
         do
-            echo -n "${PROJECT} " >&2
             case $(project_status "${PROJECT}") in
             invalid)
                 project_status -v "${PROJECT}" | tail -n+2
                 unset OK
                 echo "${PROJECT} invalid" >&2
+                [[ -z "$OK" && "$FAST" == "yes" ]] && exit 1
                 ;;
             dirty)
                 #echo "${PROJECT} is dirty"
                 echo "${PROJECT} dirty" >&2
                 ;;
             *)
-                echo "${PROJECT} ok" >&2
+                #echo "${PROJECT} ok" >&2
                 ;;
             esac
         done <"${PROJECT_LIST}"
+        [[ -z "$OK" && "$FAST" == "yes" ]] && exit 1
 
         # Ping every remote
         echo "Pinging all remotes" >/dev/stderr
         xargs -n 1 -P 0 -I{} -- "$0" ping {} <${PROJECT_LIST} || unset OK
+        [ -z "$OK" && "$FAST" == "yes" ] && exit 1
 
         # Find missing burn projects
         echo "Looking for missing burn projects" >/dev/stderr
@@ -55,6 +69,7 @@ project_doctor() {
         do
             echo "${MISSING} is on burn but not on the local system" >/dev/stderr
             unset OK
+            [[ -z "$OK" && "$FAST" == "yes" ]] && exit 1
         done <"${DEADTREE_LIST}"
         rm "${DEADTREE_LIST}"
 
@@ -66,12 +81,15 @@ project_doctor() {
         do
             echo "${MISSING} is on github but not on the local system" >/dev/stderr
             unset OK
+            [[ -z "$OK" && "$FAST" == "yes" ]] && exit 1
         done <"${GITHUB_LIST}"
         rm "${GITHUB_LIST}"
+        [[ -z "$OK" && "$FAST" == "yes" ]] && exit 1
 
         rm "${PROJECT_LIST}"
     else
         unset OK
+        [[ -z "$OK" && "$FAST" == "yes" ]] && exit 1
     fi
 
     if [ "$OK" ]
@@ -84,7 +102,10 @@ project_doctor() {
 
 project_doctor_help() {
     cat <<EOF
-Usage: project doctor
+Usage: project doctor [-f]
   Checks the health of the project system (various sanity checks)
+
+  -f, --fast
+    exit on the first failure
 EOF
 }

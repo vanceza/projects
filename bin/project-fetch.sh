@@ -23,16 +23,11 @@ project_fetch() {
         ;;
     archived)
         echo "Unarchiving"
-        if [ -d "${TARGET_DIR}" ]
-        then
-            move_all_contents "${ARCHIVE_DIR}" "${TARGET_DIR}"
-            rmdir "${ARCHIVE_DIR}"
-        else
-            mv "${ARCHIVE_DIR}" "${TARGET_DIR}"
-        fi
+        ln -s "$ARCHIVE_DIR" "${TARGET_DIR}"
         ;;
     empty)
-        git clone "${REMOTE}" "${TARGET_DIR}"
+        git clone "${REMOTE}" "${ARCHIVE_DIR}"
+        ln -s "$ARCHIVE_DIR" "${TARGET_DIR}"
         ;;
     esac
 }

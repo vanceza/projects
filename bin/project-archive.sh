@@ -1,11 +1,12 @@
 project_archive() {
-    if [ $# -ne 1 ]
-    then
-      project_help archive
-      exit 1
+    if [ $# -eq 0 ]; then
+        PROJECT="$(basename "$(pwd)")"
+    elif [ $# -eq 1 ]; then
+        PROJECT=`parse_project "$1"`
+    else
+        project_help archive
+        exit 1
     fi
-    PROJECT="$1"
-    shift 1
 
     mkdir -p "${PROJECTS_ARCHIVE_DIR}"
     if [ \! -d "${PROJECTS_ARCHIVE_DIR}" ]
@@ -27,7 +28,12 @@ project_archive() {
         exit 2
         ;;
     clean)
-        mv "${SOURCE_DIR}" "${ARCHIVE_DIR}"
+        if [ -L "${SOURCE_DIR}" ]; then # Delete symlink
+          rm "${SOURCE_DIR}"
+        else # Move directory, for old projects which were added as directories.
+          mv "${SOURCE_DIR}" "${ARCHIVE_DIR}"
+        fi
+        # Not possible to change directory from this command
         exit 0
         ;;
     dirty)
@@ -44,7 +50,7 @@ project_archive() {
 
 project_archive_help() {
     cat <<EOF
-Usage: project archive PROJECT
+Usage: project archive [PROJECT]
   Archives a project
 
   Exit codes: 0 (ok), 1 (failure), 2 (not checked out)

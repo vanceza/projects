@@ -65,11 +65,11 @@ project_create() {
     # Get the remote and make sure it is valid
     if [ -z "${REMOTE}" ]
     then
-        REMOTE=burn
+        REMOTE=germinate
         if [ -t 0 ]
         then
             # Prompt
-            echo -n "Remote [burn github] (${REMOTE}): "
+            echo -n "Remote [germinate github] (${REMOTE}): "
             read PROMPT_REMOTE
             [ -z "${PROMPT_REMOTE}" ] || REMOTE="${PROMPT_REMOTE}"
         fi
@@ -83,7 +83,7 @@ project_create() {
             return 1
         }
         ;;
-    burn)
+    germinate)
         ;;
     *)
         echo "Remote is not valid: ${REMOTE}" >/dev/stderr
@@ -157,9 +157,9 @@ project_create() {
 
     # Create the empty remote repo
     case "${REMOTE}" in
-    burn)
+    germinate)
         USER=zachary
-        ssh burn git init --bare "/data/git/${PROJECT}.git"
+        ssh germinate git init --bare "/data/git/${PROJECT}.git"
         ;;
     github)
         USER=za3k
@@ -180,6 +180,13 @@ project_create() {
     # Push all content to the remote repo
     git push -u origin --all
 
+    # Move the directory to .projects and replace it by a symlink.
+    PROJECT_DIR="${PROJECTS_HOME}/${PROJECT}"
+    ARCHIVE_DIR="${PROJECTS_ARCHIVE_DIR}/${PROJECT}"
+    mv "${PROJECT_DIR}" "${ARCHIVE_DIR}"
+    ln -s "${ARCHIVE_DIR}" "${PROJECT_DIR}"
+    cd "${PROJECT_DIR}"
+
     return 0
 }
 
@@ -191,7 +198,7 @@ Usage: project create [OPTIONS...] [REMOTE [PROJECT]]
 
 Options
   -n PROJECT        Project name
-  -r REMOTE         Remote name, one of: burn github
+  -r REMOTE         Remote name, one of: germinate github
   -d DESCRIPTION    Project description (github only)
 EOF
 }

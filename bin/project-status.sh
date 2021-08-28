@@ -10,7 +10,7 @@ project_status() {
         *)
             if [ -z "${PROJECT}" ]
             then
-                PROJECT="$1"
+                PROJECT=`parse_project "$1"`
             else
                 project_help "status"
                 exit 1
@@ -30,7 +30,6 @@ project_status() {
         exit 1
     fi
     export VERBOSE
-    TARGET_DIR="${PROJECTS_HOME}/${PROJECT}"
 
     # See if the archive directory exists
     ARCHIVE_DIR="${PROJECTS_ARCHIVE_DIR}/${PROJECT}"
@@ -42,6 +41,7 @@ project_status() {
     [ -e "${ARCHIVE_DIR}" ] || unset ARCHIVE_DIR
 
     # Check if the target directory doesn't exist
+    TARGET_DIR="${PROJECTS_HOME}/${PROJECT}"
     if [ \! -e "${TARGET_DIR}" ]
     then
         if [ -n "$ARCHIVE_DIR" ]
@@ -90,6 +90,7 @@ project_status() {
         fi
     fi
 
+    TARGET_DIR="${PROJECTS_HOME}/${PROJECT}"
     cd "${TARGET_DIR}"
     # Check if it's a git repo
     if [ \! -d .git ]
@@ -132,11 +133,13 @@ project_status() {
     
     # The git repo DOES exist with the correct remote at this point.
     # Check for an additional archived version
-    if [ -n "${ARCHIVE_DIR}" ]
-    then
-        echo "invalid"
-        echo_verbose "${PROJECT} has both a checked out and an archived version"
-        return 0
+    if [ -n "${ARCHIVE_DIR}" ]; then
+        if [ ! -L "${TARGET_DIR}" ]; then
+            echo "${TARGET_DIR} is NOT a link"
+            echo "invalid"
+            echo_verbose "${PROJECT} has both a checked out and an archived version"
+            return 0
+        fi
     fi
 
     # Check for uncommitted changes
