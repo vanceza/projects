@@ -1,0 +1,8 @@
+- Put all repo-specific info into one file, preferably a non-bash one?
+- Add per-project descriptions
+- 'project list' is getting too big. Add a notion of making projects 'invisible' where they don't show up in project list.
+- Test github create again, fix if needed.
+- Bash/zsh completion
+- Feature: Check write permissions for SSH git remote
+- Feature: Make 'project doctor' faster
+- Bug: Make 'project doctor' less flaky--right now read test sometimes fails due to opening up so many SSH connections
