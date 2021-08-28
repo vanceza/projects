@@ -25,7 +25,7 @@ project_ping() {
         github)
             # TODO: Check write access through API
             ;;
-        burn)
+        germinate)
             # TODO: Check write access by checking permissions with the correct user
             ;;
         *)

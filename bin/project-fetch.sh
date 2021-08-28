@@ -4,7 +4,6 @@ project_fetch() {
     shift 1
 
     ARCHIVE_DIR="${PROJECTS_ARCHIVE_DIR}/${PROJECT}"
-    [ -d "${ARCHIVE_DIR}" ] || unset ARCHIVE_DIR
     TARGET_DIR="${PROJECTS_HOME}/${PROJECT}"
     REMOTE="$(project_remote_for "${PROJECT}")"
 

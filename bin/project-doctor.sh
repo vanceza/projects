@@ -1,16 +1,16 @@
 github_projects() {
     if is_command gh
     then
-        gh repo --list | grep -v "forks" | grep -v "all repos" | tr -s "\n" | sed -e "s/.*\\///"
+        gh repo list | grep -v "fork" | awk '{print $1}' | cut -f2 -d'/' | sort | grep -v "^za3k.com"
     else
         echo "Install gh (npm install -g gh) to check github projects" >/dev/stderr
     fi
 }
 
-burn_projects() {
-    ssh burn     bash 2>/dev/null <<BASH
+germinate_projects() {
+    ssh germinate bash 2>/dev/null <<BASH
         cd /data/git
-        ls | sed -e 's/.git//' | sort
+        ls | sed -e 's/.git//' | sort | grep -v books-checked-out
 BASH
 }
 
@@ -42,12 +42,12 @@ project_doctor() {
             invalid)
                 project_status -v "${PROJECT}" | tail -n+2
                 unset OK
-                echo "${PROJECT} invalid" >&2
+                echo "  '${PROJECT}' invalid" >&2
                 [[ -z "$OK" && "$FAST" == "yes" ]] && exit 1
                 ;;
             dirty)
                 #echo "${PROJECT} is dirty"
-                echo "${PROJECT} dirty" >&2
+                echo "  '${PROJECT}' dirty" >&2
                 ;;
             *)
                 #echo "${PROJECT} ok" >&2
@@ -58,25 +58,25 @@ project_doctor() {
 
         # Ping every remote
         echo "Pinging all remotes" >/dev/stderr
-        xargs -n 1 -P 0 -I{} -- "$0" ping {} <${PROJECT_LIST} || unset OK
-        [ -z "$OK" && "$FAST" == "yes" ] && exit 1
+        xargs -n 1 -P 0 -- "$0" ping <${PROJECT_LIST} || unset OK
+        [[ -z "$OK" && "$FAST" == "yes" ]] && exit 1
 
-        # Find missing burn projects
-        echo "Looking for missing burn projects" >/dev/stderr
-        BURN_LIST=$(mktemp)
-        burn_projects | sort | comm -2 -3 - "${PROJECT_LIST}" >"${BURN_LIST}"
+        # Find missing germinate projects
+        echo "Looking for missing germinate projects" >/dev/stderr
+        GERMINATE_LIST=$(mktemp)
+        germinate_projects | sort | comm -2 -3 - "${PROJECT_LIST}" >"${GERMINATE_LIST}"
         while read MISSING
         do
-            echo "${MISSING} is on burn but not on the local system" >/dev/stderr
+            echo "${MISSING} is on germinate but not on the local system" >/dev/stderr
             unset OK
             [[ -z "$OK" && "$FAST" == "yes" ]] && exit 1
-        done <"${DEADTREE_LIST}"
-        rm "${DEADTREE_LIST}"
+        done <"${GERMINATE_LIST}"
+        rm "${GERMINATE_LIST}"
 
         # Find missing github projects
         echo "Looking for missing github projects" >/dev/stderr
         GITHUB_LIST=$(mktemp)
-        github_projects | sort | comm -2 -3 - "${PROJECT_LIST}" >"${GITHUB_LIST}"
+        github_projects | comm -2 -3 - "${PROJECT_LIST}" >"${GITHUB_LIST}"
         while read MISSING
         do
             echo "${MISSING} is on github but not on the local system" >/dev/stderr
