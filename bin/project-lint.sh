@@ -14,11 +14,11 @@ project_lint() {
         case $REPO in
         github)
             ;;
-        burn)
+        germinate)
             ;;
         *)
             echo "Repo was: ${REPO}"
-            echo "Repo must be one of: burn github"
+            echo "Repo must be one of: germinate github"
             STATUS=1
         esac
     done
