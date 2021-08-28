@@ -57,7 +57,7 @@ project_doctor() {
         [[ -z "$OK" && "$FAST" == "yes" ]] && exit 1
 
         # Ping every remote
-        echo "Pinging all remotes" >/dev/stderr
+        echo "Pinging all remotes (note: sometimes ssh transiently fails)" >/dev/stderr
         xargs -n 1 -P 0 -- "$0" ping <${PROJECT_LIST} || unset OK
         [[ -z "$OK" && "$FAST" == "yes" ]] && exit 1
 
