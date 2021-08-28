@@ -11,14 +11,6 @@ project_remote_for() {
         github)
             echo "git@github.com:${USER}/${PROJECT}.git"
             ;;
-        burn)
-            if [ "${USER}" = "$(whoami)" ]
-            then
-                echo "burn:/data/git/${PROJECT}.git"
-            else
-                echo "${USER}@burn:/data/git/${PROJECT}.git"
-            fi
-            ;;
         germinate)
             if [ "${USER}" = "$(whoami)" ]
             then

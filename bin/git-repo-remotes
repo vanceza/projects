@@ -19,8 +19,6 @@ summarize-source() {
         echo "BITBUCKET(vanceza)"
     elif echo "$1" | grep -q 'deadtree:/git/'; then
         echo "DEADTREE"
-    elif echo "$1" | grep -q 'burn:/data/git/'; then
-        echo "BURN"
     elif echo "$1" | grep -q '^/'; then
         echo "LOCAL"
     else
